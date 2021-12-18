@@ -1,33 +1,43 @@
 <template>
   <div class="home">
     <h1>Home</h1>
-    <h2>Refs</h2>
-    <p>{{ ninjaOne.name }} - {{ ninjaOne.age }}</p>
-    <button @click="updateNinjaOne">Update the age of ninja one</button>
-    <h2>Reactive</h2>
-    <p>{{ ninjaTwo.name }} - {{ ninjaTwo.age }}</p>
-    <button @click="updateNinjaTwo">Update the age of ninja two</button>
+    <div v-if="error">{{ error }}</div>
+    <div v-if="posts.length">
+      <PostList :posts="posts" />
+    </div>
+    <div v-else>Loading . . .</div>
   </div>
 </template>
 
 <script>
-import { ref, reactive } from '@vue/reactivity'
+import PostList from '../components/PostList.vue'
+import { ref } from 'vue'
 
 export default {
   name: 'Home',
+  components: { PostList },
   setup() {   
-    const ninjaOne = ref({ name: 'Mario', age: 30 })
-    const ninjaTwo = reactive({ name: 'Luigi', age: 35 })
+    const posts = ref([])
+    const error = ref(null)
 
-    const updateNinjaOne = () => {
-      ninjaOne.value.age = 40
+    const load = async () => {
+      try {
+        let data = await fetch('http://localhost:3000/posts')
+        if (!data.ok) {
+          throw Error('No data available.')
+        }
+        posts.value = await data.json()
+        console.log(posts.value)
+      }
+      catch (err) {
+        error.value = err.message
+        console.log(error.value)
+      }
     }
 
-    const updateNinjaTwo = () => {
-      ninjaTwo.age = 45
-    }
+    load()
 
-    return { ninjaOne, updateNinjaOne, ninjaTwo, updateNinjaTwo }
+    return { posts, error }
   }
 }
 </script>
