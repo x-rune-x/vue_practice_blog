@@ -23,6 +23,7 @@
 
 <script>
 import { ref } from 'vue'
+import {useRouter} from 'vue-router'
 
 export default {
   setup() {
@@ -30,6 +31,9 @@ export default {
     const body = ref('')
     const tag = ref('')
     const tags = ref([])
+
+    const router = useRouter()
+    console.log(router)
 
     const handleKeydown = () => {
       if (!tags.value.includes(tag.value)) {
@@ -55,6 +59,7 @@ export default {
       }
 
       await fetch('http://localhost:3000/posts', requestOptions)
+      router.push({ name: 'Home' })
     }
 
     return { title, body, tag, handleKeydown, tags, handleSubmit }
