@@ -3,7 +3,7 @@
     <div v-if="post" class="post">
         <h3>{{ post.title }}</h3>
         <p class="pre">{{ post.body }}</p>
-        <button @click="handleDelete">Delete post</button>
+        <button class="delete" @click="handleDelete">Delete post</button>
         <span>
           <div class="tags" v-for="tag in post.tags" :key="tag">
             <router-link :to="{ name: 'Tag', params: { tag: tag } }">
@@ -28,6 +28,7 @@ export default {
     components: {Spinner},
     setup() {
       const route = useRoute()
+      const router = useRouter()
       console.log(route)
       const {post, error, load} = getPost(route.params.id)
 
@@ -35,8 +36,8 @@ export default {
 
       const handleDelete = async () => {
         await deleteDoc(doc(projectFirestore, 'posts', route.params.id))
-
-        r
+        
+        router.push('/')
       }
 
       return { post, error, handleDelete }
@@ -60,8 +61,10 @@ export default {
   span {
     display: inline-block;
   }
-  div .tags {
+  div.tags {
     display: inline;
   }
-
+  button.delete {
+    margin: 10px auto;
+  }
 </style>

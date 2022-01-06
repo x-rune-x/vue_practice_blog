@@ -14,6 +14,6 @@ const firebaseConfig = {
 const firebaseApp = initializeApp(firebaseConfig)
 
 // init firestore service
-const projectFirestore = getFirestore()
+const projectFirestore = getFirestore(firebaseApp)
 
 export { projectFirestore }

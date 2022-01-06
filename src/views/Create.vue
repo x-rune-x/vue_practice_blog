@@ -25,7 +25,7 @@
 import { ref } from 'vue'
 import {useRouter} from 'vue-router'
 import { projectFirestore } from '../firebase/config'
-import { collection, addDoc } from "firebase/firestore"
+import { collection, addDoc, serverTimestamp } from "firebase/firestore"
 
 export default {
   setup() {
@@ -35,7 +35,6 @@ export default {
     const tags = ref([])
 
     const router = useRouter()
-    console.log(router)
 
     const handleKeydown = () => {
       if (!tags.value.includes(tag.value)) {
@@ -52,7 +51,8 @@ export default {
       let post = {
         title: title.value,
         body: body.value,
-        tags: tags.value
+        tags: tags.value,
+        createdAt: serverTimestamp()
       }
       
       const res = await addDoc(collection(projectFirestore, 'posts'), post)
